@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Twas the Night</title>
+  <link rel="icon" type="image/x-icon" href="chukler.ico">
+
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      text-align: center;
+    }
+
+    img {
+      max-width: 100vw;
+      max-height: 100vh;
+      display: block;
+      margin: auto;
+      cursor: pointer;
+      transform-origin: top center;
+      will-change: transform;
+    }
+  </style>
+
+  <img id="img">
+
+  <script>
+    const imgs = [
+      "assets/Comic/ROBOTMAN/xmas/1.png",
+      "assets/Comic/ROBOTMAN/xmas/2.png",
+      "assets/Comic/ROBOTMAN/xmas/3.png",
+      "assets/Comic/ROBOTMAN/xmas/4.png",
+      "assets/Comic/ROBOTMAN/xmas/5.png",
+      "assets/Comic/ROBOTMAN/xmas/6.png",
+      "assets/Comic/ROBOTMAN/xmas/7.png",
+      "assets/Comic/ROBOTMAN/xmas/8.png",
+      "assets/Comic/ROBOTMAN/xmas/9.png"
+    ];
+
+    let i = 0, z = 1;
+    const img = document.getElementById("img");
+
+    const show = () => img.src = imgs[i];
+    const apply = () => img.style.transform = `scale(${z.toFixed(2)})`;
+
+    show(); apply();
+
+    const next = d => {
+      i = Math.max(0, Math.min(imgs.length - 1, i + d));
+      z = 1;
+      show(); apply();
+    };
+
+    onkeydown = e => {
+      if (e.ctrlKey && ["+", "-", "=", "_"].includes(e.key)) {
+        e.preventDefault();
+        return;
+      }
+      if (e.key == "ArrowRight") next(1);
+      if (e.key == "ArrowLeft") next(-1);
+      if (e.key == "+") z *= 1.1, apply();
+      if (e.key == "-") z /= 1.1, apply();
+      if (e.key.toLowerCase() == "r") z = 1, apply();
+    };
+
+
+    addEventListener("wheel", e => e.ctrlKey && e.preventDefault(), { passive: false });
+
+    img.addEventListener("wheel", e => {
+      if (e.ctrlKey) {
+        e.preventDefault();
+        z *= e.deltaY < 0 ? 1.1 : 0.9;
+        apply();
+      } else if (e.shiftKey) {
+        e.preventDefault();
+        next(e.deltaY > 0 ? 1 : -1);
+      }
+    }, { passive: false });
+
+    img.onclick = e => next(e.clientX > innerWidth / 2 ? 1 : -1);
+  </script>
